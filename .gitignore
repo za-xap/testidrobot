@@ -1,0 +1,13 @@
+#ignoring some of log files and config
+*.log
+*.lock
+/v_download
+*.mp4
+/a_download
+*.ogg
+config.py
+/__pycache__
+config.cpython-36.pyc
+
+#ignoring autorun script 
+*autorun.sh
