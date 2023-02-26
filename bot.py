@@ -4,7 +4,6 @@ from datetime import datetime
 from random import random, randint
 from time import sleep
 from traceback import format_exc
-from pydub import AudioSegment
 import pytube
 import os
 import subprocess
