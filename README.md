@@ -1,5 +1,5 @@
 # testidrobot
-🤖 One more Telegram bot with another features, like download videos from YouTube (under 50 MB) and make voice messages from them.
-I writed here database by myself (for chat features) to understand how does it work. 
+🤖 Another Telegram bot with features like downloading videos from YouTube (under 50 MB) and converting them into voice messages.
+I wrote here the database (for chat features) by myself to understand how it works. 
 
-You can try it in Telegram - @testidrobot
+You can try it on Telegram - @testidrobot
