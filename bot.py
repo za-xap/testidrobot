@@ -167,7 +167,7 @@ def get_text_messages(message):
       try:
        y = message.text.split()
        url = str(y[1])
-       youtube = pytube.YouTube(url)
+       youtube = pytube.YouTube(url, use_oauth=True, allow_oauth_cache=True) #for the first attempt you will need to open google.com/device and past your code from console and authorize to any google account
        video = youtube.streams.filter(progressive=True).desc().first()
        bot.send_message(message.chat.id, "Зачекайте, будь ласка")
        video.download("/home/zaka/bots/testidrobot/v_download", "video_cache.mp4")
@@ -184,7 +184,7 @@ def get_text_messages(message):
       try:
        y = message.text.split()
        url = str(y[1])
-       youtube = pytube.YouTube(url)
+       youtube = pytube.YouTube(url, use_oauth=True, allow_oauth_cache=True) #for the first attempt you will need to open google.com/device and past your code from console and authorize to any google account 
        video = youtube.streams.filter(progressive=True).desc().first()
        bot.send_message(message.chat.id, "Зачекайте, будь ласка")
        video.download("/home/zaka/bots/testidrobot/v_download", "video_cache.mp4")
