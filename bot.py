@@ -165,11 +165,11 @@ def get_text_messages(message):
       pass
     elif message.text.startswith("/yt"):
       try:
+       bot.send_message(message.chat.id, "Зачекайте, будь ласка")
        y = message.text.split()
        url = str(y[1])
        youtube = pytube.YouTube(url, use_oauth=True, allow_oauth_cache=True) #for the first attempt you will need to open google.com/device and past your code from console and authorize to any google account
        video = youtube.streams.filter(progressive=True).desc().first()
-       bot.send_message(message.chat.id, "Зачекайте, будь ласка")
        video.download("/home/zaka/bots/testidrobot/v_download", "video_cache.mp4")
        vfile = open("/home/zaka/bots/testidrobot/v_download/video_cache.mp4", "rb")
        if os.path.getsize("/home/zaka/bots/testidrobot/v_download/video_cache.mp4") < 52428800:
@@ -180,13 +180,14 @@ def get_text_messages(message):
        os.remove("/home/zaka/bots/testidrobot/v_download/video_cache.mp4")
       except BaseException:
        bot.send_message(message.chat.id, "Введіть /yt [посилання на відео]")
+      bot.delete_message(message.chat.id, message.message_id + 1)
     elif message.text.startswith("/ogg"):
       try:
+       bot.send_message(message.chat.id, "Зачекайте, будь ласка")
        y = message.text.split()
        url = str(y[1])
        youtube = pytube.YouTube(url, use_oauth=True, allow_oauth_cache=True) #for the first attempt you will need to open google.com/device and past your code from console and authorize to any google account 
        video = youtube.streams.filter(progressive=True).desc().first()
-       bot.send_message(message.chat.id, "Зачекайте, будь ласка")
        video.download("/home/zaka/bots/testidrobot/v_download", "video_cache.mp4")
        vfile = open("/home/zaka/bots/testidrobot/v_download/video_cache.mp4", "rb")
        if os.path.getsize("/home/zaka/bots/testidrobot/v_download/video_cache.mp4") < 21000000:
@@ -207,6 +208,7 @@ def get_text_messages(message):
          os.remove("/home/zaka/bots/testidrobot/v_download/video_cache.mp4")
       except BaseException:
        bot.send_message(message.chat.id, "Введіть /ogg [посилання на відео]")
+      bot.delete_message(message.chat.id, message.message_id + 1)
     elif message.text == "/time" or message.text == "time" or message.text == "/time@testidrobot":
       now = datetime.now()
       bot.send_message(message.chat.id, "UTC - " + now.strftime("%H:%M:%S"))
@@ -233,4 +235,35 @@ def get_text_messages(message):
    except BaseException:
        bot.send_message(message.chat.id, "ERROR! Щось пішло не так...\nЯкщо ви бачите це повідомлення, повідомте про проблему {}! Скажіть, яке повідомлення викликало це повідомлення.".format('<a href="tg://user?id=550557267">адміна</a>'), parse_mode="HTML")
        bot.send_message(550557267, "ID: " + str(message.from_user.id) + " Text: " + message.text + "\n" + format_exc())
+@bot.message_handler(content_types=['audio'])
+def get_text_messages(message):
+  try:
+    if message.content_type == 'audio':
+        file_info = bot.get_file(message.audio.file_id)
+        downloaded_file = bot.download_file(file_info.file_path)
+        with open('/home/zaka/bots/testidrobot/a_download/cache.mp3', 'wb') as new_file:
+            new_file.write(downloaded_file)
+            new_file.close()
+        vfile = open("/home/zaka/bots/testidrobot/a_download/cache.mp3", "rb")
+        if os.path.getsize("/home/zaka/bots/testidrobot/a_download/cache.mp3") < 400000000:
+            input_file = '/home/zaka/bots/testidrobot/a_download/cache.mp3'
+            output_file = '/home/zaka/bots/testidrobot/a_download/cache.ogg'
+            bitrate = '64k'
+            ffmpeg_command = ['ffmpeg', '-i', input_file, '-c:a', 'libopus', '-b:a', bitrate, '-vn', output_file]
+            subprocess.run(ffmpeg_command, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            vfile.close()
+            voicefile = open("/home/zaka/bots/testidrobot/a_download/cache.ogg", "rb")
+            bot.send_voice(message.chat.id, voicefile)
+            voicefile.close()
+            os.remove("/home/zaka/bots/testidrobot/a_download/cache.mp3")
+            os.remove("/home/zaka/bots/testidrobot/a_download/cache.ogg")
+        else:
+            bot.send_message(message.chat.id, "Нажаль, відео важить більше 50 МБ (обмеження телеграму)")
+            vfile.close()
+            os.remove("/home/zaka/bots/testidrobot/a_download/cache.mp3")
+    else:
+        pass
+  except BaseException:
+    bot.send_message(message.chat.id, "ERROR! Щось пішло не так...\nЯкщо ви бачите це повідомлення, повідомте про проблему {}! Скажіть, яке повідомлення викликало це повідомлення.".format('<a href="tg://user?id=550557267">адміна</a>'), parse_mode="HTML")
+    bot.send_message(550557267, "ID: " + str(message.from_user.id) + " Text: " + message.text + "\n" + format_exc())
 bot.polling(none_stop=True, interval=0)
