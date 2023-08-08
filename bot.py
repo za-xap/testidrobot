@@ -253,6 +253,8 @@ def get_text_messages(message):
         bot.send_message(message.from_user.id, "Я тебя не розумію. Напиши /help.")
       else:
         pass
+   except telebot.apihelper.ApiTelegramException:
+       pass
    except BaseException:
        bot.send_message(message.chat.id, "ERROR! Щось пішло не так...\nЯкщо ви бачите це повідомлення, повідомте про проблему {}! Скажіть, яке повідомлення викликало це повідомлення.".format('<a href="tg://user?id=550557267">адміна</a>'), parse_mode="HTML")
        bot.send_message(550557267, "ID: " + str(message.from_user.id) + " Text: " + message.text + "\n" + format_exc())
