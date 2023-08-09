@@ -236,18 +236,6 @@ def get_text_messages(message):
     elif message.text == "/id" or message.text == "Id" or message.text == "id" or message.text == "/id@testidrobot":
       ID = message.from_user.id
       bot.send_message(message.chat.id, "Ваш телеграм ID - <code>{ID}</code>".format(ID = message.from_user.id), parse_mode="HTML")
-    elif message.text.startswith("/calc"):
-      x = message.text.split()
-      try:
-        bot.send_message(message.from_user.id, "a+b=<b>{}</b>\na-b=<b>{}</b>\na*b=<b>{}</b>\na/b=<b>{}</b>\naᵇ=<b>{}</b>\nbª=<b>{}</b>\n√a=<b>{}</b>\n√b=<b>{}</b>".format(float(x[1])+float(x[2]), float(x[1])-float(x[2]), float(x[1])*float(x[2]), float(x[1])/float(x[2]), float(x[1])**float(x[2]), float(x[2])**float(x[1]), float(x[1])**0.5, float(x[2])**0.5), parse_mode="HTML")
-      except ZeroDivisionError:
-          bot.send_message(message.from_user.id, "a+b={}\na-b={}\na*b={}\na/b=На нуль ділити не можна!\naᵇ={}\nbª={}\n√a={}\n√b={}".format(float(x[1])+float(x[2]), float(x[1])-float(x[2]), float(x[1])*float(x[2]), float(x[1])**float(x[2]), float(x[2])**float(x[1]), float(x[1])**0.5, float(x[2])**0.5), parse_mode="HTML")
-      except OverflowError:
-            bot.send_message(message.from_user.id, "a+b={}\na-b={}\na*b={}\na/b={}\naᵇ=ДУЖЕ багато\nbª=ДУЖЕ багато\n√a={}\n√b={}".format(float(x[1])+float(x[2]), float(x[1])-float(x[2]), float(x[1])*float(x[2]), float(x[1])/float(x[2]), float(x[1])**0.5, float(x[2])**0.5), parse_mode="HTML")
-      except ValueError:
-        bot.send_message(message.from_user.id, "Введіть /calc число число")
-      except IndexError: 
-        bot.send_message(message.from_user.id, "Введіть /calc число число")
     else:
       if message.from_user.id == message.chat.id:
         bot.send_message(message.from_user.id, "Я тебя не розумію. Напиши /help.")
