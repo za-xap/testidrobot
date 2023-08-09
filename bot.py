@@ -37,7 +37,7 @@ def get_text_messages(message):
              if chat.find(user_id) == -1:
                  chat = chat + str(user_id) + " "
          print(chat, file = filec)
-     if chat_notfound:
+     if chat_notfound == True:
          print(chat_id, user_id, "", file = filec)
      filec.close()
      fileu = open("users.log", 'r+')
@@ -58,7 +58,6 @@ def get_text_messages(message):
         nu = n + 1
         break
       n_last = n
-      name = name[1:]
       num = num.replace("'", "")
       num = int(num) + 1
       num_new = str(num)
@@ -67,6 +66,8 @@ def get_text_messages(message):
       tg_name = str(message.from_user.first_name)
       if message.from_user.last_name is not None:
        tg_name = tg_name + " " + str(message.from_user.last_name)
+      elif message.from_user.last_name is None:
+       tg_name = tg_name
       if name == tg_name:
        pass
       elif name != tg_name:
@@ -96,10 +97,10 @@ def get_text_messages(message):
       user_id = message.from_user.id
       user_fn = message.from_user.first_name
       if message.from_user.last_name is None:
-          user_ln = ""
-      else:
+          print(user_id, user_fn, str(1) + " ", file = fileu)
+      elif message.from_user.last_name is not None:
           user_ln = message.from_user.last_name
-      print(user_id, user_fn, user_ln, str(1) + " ", file = fileu)
+          print(user_id, user_fn, user_ln, str(1) + " ", file = fileu)
      else:
       pass
      fileu.close()
