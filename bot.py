@@ -318,18 +318,17 @@ def get_text_messages(message):
        bot.send_message(550557267, "ID: " + str(message.from_user.id) + " Text: " + message.text + "\n" + format_exc())
 @bot.message_handler(content_types=['location'])
 def location(message):
- if message.chat.type == "private":
-  dtn = datetime.now()
-  botlogfile = open('bot.log', 'a')
-  dtn = datetime.now()
-  none = None
-  if message.from_user.last_name is none:
-    full_name = message.from_user.first_name
-  elif message.from_user.last_name is not none:
-    full_name = message.from_user.first_name + " " + message.from_user.last_name
-  print(dtn.strftime("%d-%m-%Y %H:%M:%S"), 'Юзер ' + full_name, "ID:", message.from_user.id, 'прислал точку: ' + str(message.location.latitude), str(message.location.longitude), file=botlogfile)
-  botlogfile.close()
- else:
+  if message.chat.type == "private":
+   dtn = datetime.now()
+   botlogfile = open('bot.log', 'a')
+   dtn = datetime.now()
+   none = None
+   if message.from_user.last_name is none:
+     full_name = message.from_user.first_name
+   elif message.from_user.last_name is not none:
+     full_name = message.from_user.first_name + " " + message.from_user.last_name
+   print(dtn.strftime("%d-%m-%Y %H:%M:%S"), 'Юзер ' + full_name, "ID:", message.from_user.id, 'прислал точку: ' + str(message.location.latitude), str(message.location.longitude), file=botlogfile)
+   botlogfile.close()
   try:
     if message.location is not None:
         adm  = (50.05920, 36.28530)
@@ -340,22 +339,21 @@ def location(message):
     bot.send_message(550557267, "ID: " + str(message.from_user.id) + " LOCATION" + "\n" + format_exc())
 @bot.message_handler(content_types=['audio'])
 def get_audio_messages(message):
- if message.chat.type == "private":
-  dtn = datetime.now()
-  botlogfile = open('bot.log', 'a')
-  dtn = datetime.now()
-  none = None
-  if message.audio.file_name is not none:
-    audio_name = str(message.audio.file_name)
-  elif message.audio.file_name is none:
-    audio_name = "НЕТ НАЗВАНИЯ"
-  if message.from_user.last_name is none:
-    full_name = message.from_user.first_name
-  elif message.from_user.last_name is not none:
-    full_name = message.from_user.first_name + " " + message.from_user.last_name
-  print(dtn.strftime("%d-%m-%Y %H:%M:%S"), 'Юзер ' + full_name, "ID:", message.from_user.id, 'прислал аудио: ' + audio_name, 'AUDIO ID: ' + str(message.audio.file_id), file=botlogfile)
-  botlogfile.close()
- else:
+  if message.chat.type == "private":
+   dtn = datetime.now()
+   botlogfile = open('bot.log', 'a')
+   dtn = datetime.now()
+   none = None
+   if message.audio.file_name is not none:
+     audio_name = str(message.audio.file_name)
+   elif message.audio.file_name is none:
+     audio_name = "НЕТ НАЗВАНИЯ"
+   if message.from_user.last_name is none:
+     full_name = message.from_user.first_name
+   elif message.from_user.last_name is not none:
+     full_name = message.from_user.first_name + " " + message.from_user.last_name
+   print(dtn.strftime("%d-%m-%Y %H:%M:%S"), 'Юзер ' + full_name, "ID:", message.from_user.id, 'прислал аудио: ' + audio_name, 'AUDIO ID: ' + str(message.audio.file_id), file=botlogfile)
+   botlogfile.close()
   try:
     if message.content_type == 'audio':
       if message.from_user.id == message.chat.id:
