@@ -7,7 +7,7 @@ from traceback import format_exc
 from bs4 import BeautifulSoup
 from telebot import types
 from geopy.distance import geodesic
-import pytube
+import pytubefix
 import os
 import subprocess
 import requests
@@ -206,7 +206,7 @@ def get_text_messages(message):
         part = True
        else:
         pass
-       youtube = pytube.YouTube(url, use_oauth=True, allow_oauth_cache=True) #for the first attempt you will need to open google.com/device and past your code from console and authorize to any google account
+       youtube = pytubefix.YouTube(url, use_oauth=True, allow_oauth_cache=True) #for the first attempt you will need to open google.com/device and past your code from console and authorize to any google account
        video = youtube.streams.filter(progressive=True).desc().first()
        video.download(config.path_to_project + "/testidrobot/v_download", "video_cache.mp4")
        if part == True:
@@ -239,7 +239,7 @@ def get_text_messages(message):
        bot.send_message(message.chat.id, "Зачекайте, будь ласка")
        y = message.text.split()
        url = str(y[1])
-       youtube = pytube.YouTube(url, use_oauth=True, allow_oauth_cache=True) #for the first attempt you will need to open google.com/device and past your code from console and authorize to any google account 
+       youtube = pytubefix.YouTube(url, use_oauth=True, allow_oauth_cache=True) #for the first attempt you will need to open google.com/device and past your code from console and authorize to any google account 
        video = youtube.streams.filter(progressive=True).desc().first()
        video.download(config.path_to_project + "/testidrobot/v_download", "video_cache.mp4")
        vfile = open(config.path_to_project + "/testidrobot/v_download/video_cache.mp4", "rb")
