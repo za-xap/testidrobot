@@ -14,21 +14,24 @@ bot = telebot.TeleBot(config.token)
 
 
 @bot.message_handler(content_types=['text'])
-def get_text_messages(message):
+def get_text_messages(message, full_name=None, start=None, end=None):
     if message.chat.type == "private":
         dtn = datetime.now()
         botlogfile = open('bot.log', 'a', encoding="utf-8")
         none = None
         if message.from_user.last_name is none:
             full_name = message.from_user.first_name
-        elif message.from_user.last_name is not none:
+        else:
             full_name = message.from_user.first_name + " " + message.from_user.last_name
         print(dtn.strftime("%d-%m-%Y %H:%M:%S"), 'Юзер ' + full_name, "ID:", message.from_user.id,
               'написал: ' + message.text, file=botlogfile)
         botlogfile.close()
     try:
         if message.chat.type == "private" and (
-                message.text == "/start@testidrobot" or message.text == "/start" or message.text == "Привіт" or message.text == "привіт"):
+                message.text == "/start@testidrobot" or
+                message.text == "/start" or
+                message.text == "Привіт" or
+                message.text == "привіт"):
             bot.send_message(message.chat.id,
                              "Привіт, {mention}!\nЯ <b>{1.first_name}</b>, подивись мої команди.".format(
                                  message.from_user, bot.get_me(),
@@ -52,13 +55,19 @@ def get_text_messages(message):
                 userlogfile.close()
         elif message.text == "type":
             bot.send_message(message.chat.id, message.chat.type)
-        elif message.text == "/help" or message.text == "!help" or message.text == "/help@testidrobot":
+        elif (message.text == "/help" or
+              message.text == "!help" or
+              message.text == "/help@testidrobot"):
             if message.chat.type != "private":
                 bot.send_message(message.chat.id,
-                                 "Мої команди в чаті:\n!hit або /hit у відповідь іншому учаснику - дати ляпаса\n!top або /top - топ чату")
+                                 "Мої команди в чаті:\n"
+                                 "!hit або /hit у відповідь іншому учаснику - дати ляпаса\n"
+                                 "!top або /top - топ чату")
             else:
                 bot.send_message(message.from_user.id, "Напиши привіт")
-        elif message.text == "/hit" or message.text == "!hit" or message.text == "/hit@testidrobot":
+        elif (message.text == "/hit" or
+              message.text == "!hit" or
+              message.text == "/hit@testidrobot"):
             filec = open("chats.log", 'r+')
             string = filec.read()
             filec.close()
@@ -146,42 +155,52 @@ def get_text_messages(message):
                 try:
                     if message.from_user.id == message.reply_to_message.from_user.id:
                         if message.from_user.last_name is not None:
-                            bot.send_message(message.chat.id, "{fron} дав ляпаса самому собі".format(
-                                fron=f'<a href="tg://user?id={message.from_user.id}">{message.from_user.first_name} {message.from_user.last_name}</a>'),
-                                             parse_mode="html")
+                            bot.send_message(message.chat.id, "{from_} дав ляпаса самому собі".format(
+                                from_=f'<a href="tg://user?id={message.from_user.id}">{message.from_user.first_name} '
+                                      f'{message.from_user.last_name}</a>'), parse_mode="html")
                         elif message.from_user.last_name is None:
-                            bot.send_message(message.chat.id, "{fron} дав ляпаса самому собі".format(
-                                fron=f'<a href="tg://user?id={message.from_user.id}">{message.from_user.first_name}</a>'),
-                                             parse_mode="html")
+                            bot.send_message(message.chat.id, "{from_} дав ляпаса самому собі".format(
+                                from_=f'<a href="tg://user?id={message.from_user.id}">{message.from_user.first_name}'
+                                      f'</a>'), parse_mode="html")
                         else:
                             pass
-                    elif message.from_user.last_name is not None and message.reply_to_message.from_user.last_name is not None:
-                        bot.send_message(message.chat.id, "{fron} дав ляпаса {to}".format(
-                            fron=f'<a href="tg://user?id={message.from_user.id}">{message.from_user.first_name} {message.from_user.last_name}</a>',
-                            to=f'<a href="tg://user?id={message.reply_to_message.from_user.id}">{message.reply_to_message.from_user.first_name} {message.reply_to_message.from_user.last_name}</a>'),
-                                         parse_mode="HTML")
-                    elif message.reply_to_message.from_user.last_name is None and message.from_user.last_name is None:
-                        bot.send_message(message.chat.id, "{fron} дав ляпаса {to}".format(
-                            fron=f'<a href="tg://user?id={message.from_user.id}">{message.from_user.first_name}</a>',
-                            to=f'<a href="tg://user?id={message.reply_to_message.from_user.id}">{message.reply_to_message.from_user.first_name}</a>'),
-                                         parse_mode="HTML")
-                    elif message.from_user.last_name is not None and message.reply_to_message.from_user.last_name is None:
-                        bot.send_message(message.chat.id, "{fron} дав ляпаса {to}".format(
-                            fron=f'<a href="tg://user?id={message.from_user.id}">{message.from_user.first_name} {message.from_user.last_name}</a>',
-                            to=f'<a href="tg://user?id={message.reply_to_message.from_user.id}">{message.reply_to_message.from_user.first_name}</a>'),
-                                         parse_mode="HTML")
-                    elif message.from_user.last_name is None and message.reply_to_message.from_user.last_name is not None:
-                        bot.send_message(message.chat.id, "{fron} дав ляпаса {to}".format(
-                            fron=f'<a href="tg://user?id={message.from_user.id}">{message.from_user.first_name}</a>',
-                            to=f'<a href="tg://user?id={message.reply_to_message.from_user.id}">{message.reply_to_message.from_user.first_name} {message.reply_to_message.from_user.last_name}</a>'),
-                                         parse_mode="HTML")
+                    elif (message.from_user.last_name is not None and
+                          message.reply_to_message.from_user.last_name is not None):
+                        bot.send_message(message.chat.id, "{from_} дав ляпаса {to}".format(
+                            from_=f'<a href="tg://user?id={message.from_user.id}">{message.from_user.first_name} '
+                                  f'{message.from_user.last_name}</a>',
+                            to=f'<a href="tg://user?id={message.reply_to_message.from_user.id}">'
+                               f'{message.reply_to_message.from_user.first_name} '
+                               f'{message.reply_to_message.from_user.last_name}</a>'), parse_mode="HTML")
+                    elif (message.reply_to_message.from_user.last_name is None and
+                          message.from_user.last_name is None):
+                        bot.send_message(message.chat.id, "{from_} дав ляпаса {to}".format(
+                            from_=f'<a href="tg://user?id={message.from_user.id}">{message.from_user.first_name}</a>',
+                            to=f'<a href="tg://user?id={message.reply_to_message.from_user.id}">'
+                               f'{message.reply_to_message.from_user.first_name}</a>'), parse_mode="HTML")
+                    elif (message.from_user.last_name is not None and
+                          message.reply_to_message.from_user.last_name is None):
+                        bot.send_message(message.chat.id, "{from_} дав ляпаса {to}".format(
+                            from_=f'<a href="tg://user?id={message.from_user.id}">{message.from_user.first_name} '
+                                  f'{message.from_user.last_name}</a>',
+                            to=f'<a href="tg://user?id={message.reply_to_message.from_user.id}">'
+                               f'{message.reply_to_message.from_user.first_name}</a>'), parse_mode="HTML")
+                    elif (message.from_user.last_name is None and
+                          message.reply_to_message.from_user.last_name is not None):
+                        bot.send_message(message.chat.id, "{from_} дав ляпаса {to}".format(
+                            from_=f'<a href="tg://user?id={message.from_user.id}">{message.from_user.first_name}</a>',
+                            to=f'<a href="tg://user?id={message.reply_to_message.from_user.id}">'
+                               f'{message.reply_to_message.from_user.first_name} '
+                               f'{message.reply_to_message.from_user.last_name}</a>'), parse_mode="HTML")
                     else:
                         pass
                 except AttributeError:
                     pass
             else:
                 pass
-        elif message.text == "!top" or message.text == "!топ" or message.text == "/top":
+        elif (message.text == "!top" or
+              message.text == "!топ" or
+              message.text == "/top"):
             if message.chat.type != "private":
                 filec = open("chats.log", 'r+', encoding="utf-8")
                 chats_file = filec.read()
@@ -262,8 +281,6 @@ def get_text_messages(message):
             except BaseException:
                 bot.send_message(message.chat.id,
                                  "Введіть /yt <посилання на відео> [час старту *опціонально] [час кінця *опціонально]")
-                bot.send_message(550557267,
-                                 "ID: " + str(message.from_user.id) + " Text: " + message.text + "\n" + format_exc())
             bot.delete_message(message.chat.id, message.message_id + 1)
         elif message.text.startswith("/ogg"):
             try:
@@ -296,13 +313,20 @@ def get_text_messages(message):
             except BaseException:
                 bot.send_message(message.chat.id, "Введіть /ogg [посилання на відео]")
             bot.delete_message(message.chat.id, message.message_id + 1)
-        elif message.text == "/time" or message.text == "time" or message.text == "/time@testidrobot":
+        elif (message.text == "/time" or
+              message.text == "time" or
+              message.text == "/time@testidrobot"):
             now = datetime.now()
             bot.send_message(message.chat.id, "UTC - " + now.strftime("%H:%M:%S"))
-        elif message.text == "/id" or message.text == "Id" or message.text == "id" or message.text == "/id@testidrobot":
+        elif (message.text == "/id" or
+              message.text == "Id" or
+              message.text == "id" or
+              message.text == "/id@testidrobot"):
             bot.send_message(message.chat.id, "Ваш телеграм ID - <code>{ID}</code>".format(ID=message.from_user.id),
                              parse_mode="HTML")
-        elif message.text == "H" or message.text == "h" or message.text == "/h":
+        elif (message.text == "H" or
+              message.text == "h" or
+              message.text == "/h"):
             url = 'https://steamcommunity.com/id/Za_XaP'
             r = requests.get(url)
             soup = BeautifulSoup(r.content, features="lxml")
@@ -321,8 +345,8 @@ def get_text_messages(message):
                 try:
                     bot.send_message(message.from_user.id, "Повідомлення відправлено адміну бота!")
                     bot.send_message(550557267, "Повідомлення від {mention}:\n\n{msg}".format(
-                        mention=f'<a href="tg://user?id={message.from_user.id}">{message.from_user.first_name} {message.from_user.last_name}</a>',
-                        msg=x[1]), parse_mode="HTML")
+                        mention=f'<a href="tg://user?id={message.from_user.id}">{message.from_user.first_name} '
+                                f'{message.from_user.last_name}</a>', msg=x[1]), parse_mode="HTML")
                     bot.forward_message(550557267, message.from_user.id, message.message_id)
                 except BaseException:
                     bot.send_message(message.from_user.id, 'Введіть /toadm текст')
@@ -360,14 +384,14 @@ def get_text_messages(message):
 
 
 @bot.message_handler(content_types=['location'])
-def location(message):
+def get_location_messages(message):
     if message.chat.type == "private":
         botlogfile = open('bot.log', 'a', encoding="utf-8")
         dtn = datetime.now()
         none = None
         if message.from_user.last_name is none:
             full_name = message.from_user.first_name
-        elif message.from_user.last_name is not none:
+        else:
             full_name = message.from_user.first_name + " " + message.from_user.last_name
         print(dtn.strftime("%d-%m-%Y %H:%M:%S"), 'Юзер ' + full_name, "ID:", message.from_user.id,
               'прислал точку: ' + str(message.location.latitude), str(message.location.longitude), file=botlogfile)
@@ -381,7 +405,7 @@ def location(message):
     except BaseException:
         bot.send_message(message.from_user.id,
                          "ERROR! Щось пішло не так...\nЯкщо ви бачите це повідомлення, повідомте про проблему {}! "
-                         "Скажіть, яке повідомленяя викликало це повідомлення.".format(
+                         "Скажіть, яке повідомлення викликало це повідомлення.".format(
                              '<a href="tg://user?id=550557267">адміна</a>'), parse_mode="HTML")
         bot.send_message(550557267, "ID: " + str(message.from_user.id) + " LOCATION" + "\n" + format_exc())
 
@@ -394,11 +418,11 @@ def get_audio_messages(message):
         none = None
         if message.audio.file_name is not none:
             audio_name = str(message.audio.file_name)
-        elif message.audio.file_name is none:
+        else:
             audio_name = "НЕТ НАЗВАНИЯ"
         if message.from_user.last_name is none:
             full_name = message.from_user.first_name
-        elif message.from_user.last_name is not none:
+        else:
             full_name = message.from_user.first_name + " " + message.from_user.last_name
         print(dtn.strftime("%d-%m-%Y %H:%M:%S"), 'Юзер ' + full_name, "ID:", message.from_user.id,
               'прислал аудио: ' + audio_name, 'AUDIO ID: ' + str(message.audio.file_id), file=botlogfile)
