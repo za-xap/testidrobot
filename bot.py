@@ -330,10 +330,10 @@ def get_text_messages(message, full_name=None, start=None, end=None):
             url = 'https://steamcommunity.com/id/Za_XaP'
             r = requests.get(url)
             soup = BeautifulSoup(r.content, features="lxml")
-            i = soup.find("div", {"class": "game_info_details"}).get_text()
-            i = i.split("\r\n\t\t\t\t\t\t\t\t\t\t\t")
-            i = i[1].split(" ")
-            i = i[0]
+            div = soup.find("div", {"class": "game_info_details"})
+            line = [s.strip() for s in div.stripped_strings if s.strip()]
+            i = line[0]
+            i = i.split()[0]
             if "," in i:
                 i = i.replace(",", "")
             bot.send_message(message.from_user.id, "Admin has {} hours in the last game".format(i))
@@ -396,18 +396,18 @@ def get_location_messages(message):
         print(dtn.strftime("%d-%m-%Y %H:%M:%S"), 'Юзер ' + full_name, "ID:", message.from_user.id,
               'прислал точку: ' + str(message.location.latitude), str(message.location.longitude), file=botlogfile)
         botlogfile.close()
-    try:
-        if message.location is not None:
-            adm = (50.05920, 36.28530)
-            us = (message.location.latitude, message.location.longitude)
-            bot.send_message(message.from_user.id, "Адмін знаходиться від цієї точки в {d} кілометрах".format(
-                d=round(geodesic(adm, us).km, 1)), parse_mode="HTML", reply_markup=types.ReplyKeyboardRemove())
-    except BaseException:
-        bot.send_message(message.from_user.id,
-                         "ERROR! Щось пішло не так...\nЯкщо ви бачите це повідомлення, повідомте про проблему {}! "
-                         "Скажіть, яке повідомлення викликало це повідомлення.".format(
-                             '<a href="tg://user?id=550557267">адміна</a>'), parse_mode="HTML")
-        bot.send_message(550557267, "ID: " + str(message.from_user.id) + " LOCATION" + "\n" + format_exc())
+        try:
+            if message.location is not None:
+                adm = (50.05920, 36.28530)
+                us = (message.location.latitude, message.location.longitude)
+                bot.send_message(message.from_user.id, "Адмін знаходиться від цієї точки в {d} кілометрах".format(
+                    d=round(geodesic(adm, us).km, 1)), parse_mode="HTML", reply_markup=types.ReplyKeyboardRemove())
+        except BaseException:
+            bot.send_message(message.from_user.id,
+                             "ERROR! Щось пішло не так...\nЯкщо ви бачите це повідомлення, повідомте про проблему {}! "
+                             "Скажіть, яке повідомлення викликало це повідомлення.".format(
+                                 '<a href="tg://user?id=550557267">адміна</a>'), parse_mode="HTML")
+            bot.send_message(550557267, "ID: " + str(message.from_user.id) + " LOCATION" + "\n" + format_exc())
 
 
 @bot.message_handler(content_types=['audio'])
@@ -427,43 +427,38 @@ def get_audio_messages(message):
         print(dtn.strftime("%d-%m-%Y %H:%M:%S"), 'Юзер ' + full_name, "ID:", message.from_user.id,
               'прислал аудио: ' + audio_name, 'AUDIO ID: ' + str(message.audio.file_id), file=botlogfile)
         botlogfile.close()
-    try:
-        if message.content_type == 'audio':
-            if message.from_user.id == message.chat.id:
-                file_info = bot.get_file(message.audio.file_id)
-                downloaded_file = bot.download_file(file_info.file_path)
-                with open(config.path_to_project + '/testidrobot/a_download/cache.mp3', 'wb') as new_file:
-                    new_file.write(downloaded_file)
-                    new_file.close()
-                vfile = open(config.path_to_project + "/testidrobot/a_download/cache.mp3", "rb")
-                if os.path.getsize(config.path_to_project + "/testidrobot/a_download/cache.mp3") < 400000000:
-                    input_file = config.path_to_project + '/testidrobot/a_download/cache.mp3'
-                    output_file = config.path_to_project + '/testidrobot/a_download/cache.ogg'
-                    bitrate = '64k'
-                    ffmpeg_command = [config.ffmpeg_bin, '-i', input_file, '-c:a', 'libopus', '-b:a', bitrate, '-vn',
-                                      output_file]
-                    subprocess.run(ffmpeg_command, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-                    vfile.close()
-                    voicefile = open(config.path_to_project + "/testidrobot/a_download/cache.ogg", "rb")
-                    bot.send_voice(message.chat.id, voicefile)
-                    voicefile.close()
-                    os.remove(config.path_to_project + "/testidrobot/a_download/cache.mp3")
-                    os.remove(config.path_to_project + "/testidrobot/a_download/cache.ogg")
-                else:
-                    bot.send_message(message.chat.id, "Нажаль, відео важить більше 50 МБ (обмеження телеграму)")
-                    vfile.close()
-                    os.remove(config.path_to_project + "/testidrobot/a_download/cache.mp3")
+        try:
+            file_info = bot.get_file(message.audio.file_id)
+            downloaded_file = bot.download_file(file_info.file_path)
+            with open(config.path_to_project + '/testidrobot/a_download/cache.mp3', 'wb') as new_file:
+                new_file.write(downloaded_file)
+                new_file.close()
+            vfile = open(config.path_to_project + "/testidrobot/a_download/cache.mp3", "rb")
+            if os.path.getsize(config.path_to_project + "/testidrobot/a_download/cache.mp3") < 400000000:
+                input_file = config.path_to_project + '/testidrobot/a_download/cache.mp3'
+                output_file = config.path_to_project + '/testidrobot/a_download/cache.ogg'
+                bitrate = '64k'
+                ffmpeg_command = [config.ffmpeg_bin, '-i', input_file, '-c:a', 'libopus', '-b:a', bitrate, '-vn',
+                                  output_file]
+                subprocess.run(ffmpeg_command, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                vfile.close()
+                voicefile = open(config.path_to_project + "/testidrobot/a_download/cache.ogg", "rb")
+                bot.send_voice(message.chat.id, voicefile)
+                voicefile.close()
+                os.remove(config.path_to_project + "/testidrobot/a_download/cache.mp3")
+                os.remove(config.path_to_project + "/testidrobot/a_download/cache.ogg")
             else:
-                pass
-        else:
-            pass
-    except BaseException:
-        bot.send_message(message.chat.id,
-                         "ERROR! Щось пішло не так...\nЯкщо ви бачите це повідомлення, повідомте про проблему {}! "
-                         "Скажіть, яке повідомлення викликало це повідомлення.".format(
-                             '<a href="tg://user?id=550557267">адміна</a>'), parse_mode="HTML")
-        bot.send_message(550557267,
-                         "ID: " + str(message.from_user.id) + " File: " + message.audio.file_name + "\n" + format_exc())
+                bot.send_message(message.chat.id, "Нажаль, відео важить більше 50 МБ (обмеження телеграму)")
+                vfile.close()
+                os.remove(config.path_to_project + "/testidrobot/a_download/cache.mp3")
+        except BaseException:
+            bot.send_message(message.chat.id,
+                             "ERROR! Щось пішло не так...\nЯкщо ви бачите це повідомлення, повідомте про проблему {}! "
+                             "Скажіть, яке повідомлення викликало це повідомлення.".format(
+                                 '<a href="tg://user?id=550557267">адміна</a>'), parse_mode="HTML")
+            bot.send_message(550557267,
+                             "ID: " + str(
+                                 message.from_user.id) + " File: " + message.audio.file_name + "\n" + format_exc())
 
 
 bot.polling(none_stop=True, interval=0)
