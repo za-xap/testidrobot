@@ -327,16 +327,9 @@ def get_text_messages(message, full_name=None, start=None, end=None):
         elif (message.text == "H" or
               message.text == "h" or
               message.text == "/h"):
-            url = 'https://steamcommunity.com/id/Za_XaP'
-            r = requests.get(url)
-            soup = BeautifulSoup(r.content, features="lxml")
-            div = soup.find("div", {"class": "game_info_details"})
-            line = [s.strip() for s in div.stripped_strings if s.strip()]
-            i = line[0]
-            i = i.split()[0]
-            if "," in i:
-                i = i.replace(",", "")
-            bot.send_message(message.from_user.id, "Admin has {} hours in the last game".format(i))
+            url = 'https://steamcommunity.com/id/Za_XaP?xml=1'
+            i = BeautifulSoup(requests.get(url).content, "xml").find("hoursOnRecord").text.replace(",", "")
+            bot.send_message(message.chat.id, f"Admin has {i} hours in the last game")
         elif message.text.startswith("/toadm"):
             if not message.text.startswith("/toadm "):
                 bot.send_message(message.from_user.id, 'Введіть /toadm текст')
